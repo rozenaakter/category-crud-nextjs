@@ -1,6 +1,8 @@
 Category Management System 🚀
 A modern, full-stack category management application built with Next.js 16, Prisma, and Tailwind CSS. Features beautiful card-based UI, image uploads, and full CRUD operations.
 
+# vercel live link
+https://category-crud-nextjs-fu3lxko2i-rozena-akters-projects.vercel.app/
 
 ✨ Features
 🎨 Modern UI - Beautiful card-based design with Tailwind CSS

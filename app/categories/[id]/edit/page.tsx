@@ -5,19 +5,26 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 
 interface EditCategoryPageProps {
-  params:Promise<{
+  params: Promise<{
     id: string
   }>
 }
 
 export default async function EditCategoryPage({ params }: EditCategoryPageProps) {
-  const {id} = await params
+  const { id } = await params
   const category = await prisma.category.findUnique({
-    where: { id}
+    where: { id }
   })
 
   if (!category) {
     notFound()
+  }
+
+  // Convert Date objects to strings for compatibility with CategoryForm
+  const formattedCategory = {
+    ...category,
+    createdAt: category.createdAt.toISOString(),
+    updatedAt: category.updatedAt.toISOString()
   }
 
   return (
@@ -29,7 +36,7 @@ export default async function EditCategoryPage({ params }: EditCategoryPageProps
       </Link>
       
       <h1 className="text-3xl font-bold mb-6">Edit Category</h1>
-      <CategoryForm initialData={category} />
+      <CategoryForm initialData={formattedCategory} />
     </div>
   )
 }

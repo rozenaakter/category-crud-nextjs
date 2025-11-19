@@ -1,35 +1,29 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
-// GET - Single Category দেখাবে
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+// GET - All categories
+export async function GET() {
   try {
-    const category = await prisma.category.findUnique({
-      where: { id: params.id }
+    const categories = await prisma.category.findMany({
+      orderBy: { createdAt: 'desc' }
     })
     
-    if (!category) {
-      return NextResponse.json(
-        { error: 'Category not found' },
-        { status: 404 }
-      )
-    }
-    
-    return NextResponse.json(category)
+    return NextResponse.json(categories)
   } catch (error) {
+    console.error('Error fetching categories:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch category' },
+      { error: 'Failed to fetch categories' },
       { status: 500 }
     )
   }
 }
-// POST - নতুন Category তৈরি করবে
+
+// POST - Create new category
 export async function POST(request: Request) {
   try {
     const { name, image } = await request.json()
+    
+    console.log('Creating category:', { name, image })
     
     if (!name || !image) {
       return NextResponse.json(
@@ -45,59 +39,12 @@ export async function POST(request: Request) {
       }
     })
     
+    console.log('Category created successfully:', category)
     return NextResponse.json(category, { status: 201 })
   } catch (error) {
     console.error('Create category error:', error)
     return NextResponse.json(
       { error: 'Failed to create category' },
-      { status: 500 }
-    )
-  }
-}
-
-// PUT - Category Edit করবে
-export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const { name, image } = await request.json()
-    
-    if (!name || !image) {
-      return NextResponse.json(
-        { error: 'Name and image are required' },
-        { status: 400 }
-      )
-    }
-
-    const category = await prisma.category.update({
-      where: { id: params.id },
-      data: { name, image }
-    })
-    
-    return NextResponse.json(category)
-  } catch (error) {
-    return NextResponse.json(
-      { error: 'Failed to update category' },
-      { status: 500 }
-    )
-  }
-}
-
-// DELETE - Category Delete করবে
-export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
-  try {
-    await prisma.category.delete({
-      where: { id: params.id }
-    })
-    
-    return NextResponse.json({ message: 'Category deleted successfully' })
-  } catch (error) {
-    return NextResponse.json(
-      { error: 'Failed to delete category' },
       { status: 500 }
     )
   }

@@ -8,6 +8,13 @@ export default async function CategoriesPage() {
     orderBy: { createdAt: 'desc' }
   })
 
+  // Convert Date objects to strings for compatibility with CategoryTable
+  const formattedCategories = categories.map(category => ({
+    ...category,
+    createdAt: category.createdAt.toISOString(),
+    updatedAt: category.updatedAt.toISOString()
+  }))
+
   return (
     <div className="container mx-auto p-6">
       {/* back to home button */}
@@ -27,7 +34,7 @@ export default async function CategoriesPage() {
         </Link>
       </div>
       
-      <CategoryTable categories={categories} />
+      <CategoryTable categories={formattedCategories} />
     </div>
   )
 }
